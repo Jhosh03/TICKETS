@@ -1,0 +1,618 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package vista;
+
+import java.awt.HeadlessException;
+import static java.lang.Integer.parseInt;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import modelo.Conexion;
+
+/**
+ *
+ * @author josh_
+ */
+public class Recepcion extends javax.swing.JFrame {
+    
+    Conexion con = new Conexion();
+    Connection cn;
+    PreparedStatement ps;
+    Statement st;
+    ResultSet rs;
+    DefaultTableModel md;
+    int id;
+
+    public Recepcion() {
+        initComponents();
+        this.setLocationRelativeTo(null);
+        lblnumeroTicket.setVisible(false);
+        txtFecha.setVisible(false);
+        lblTicket.setVisible(false);
+        lblFecha.setVisible(false);
+        listar();
+        
+    }
+
+    public void limpiarCajas() {
+
+        txtCodigo.setText(null);
+        txtNombre.setText(null);
+        txtApellido.setText(null);
+        txtFecha.setText(null);
+        lblnumeroTicket.setText(null);
+        cmbTipo.setSelectedIndex(0);
+
+    }
+
+    void listar() {
+
+        String sql = "SELECT * FROM tickets";
+
+        try {
+            cn = con.getConexion();
+            st = cn.createStatement();
+            rs = st.executeQuery(sql);
+            Object[] tickets = new Object[6];
+            md = (DefaultTableModel) tbDatos.getModel();
+            while (rs.next()) {
+                tickets[0] = rs.getInt("id_ticket");
+                tickets[1] = rs.getString("codigo");
+                tickets[2] = rs.getString("Nombre");
+                tickets[3] = rs.getString("Apellido");
+                tickets[4] = rs.getString("tipo_turno");
+                tickets[5] = rs.getString("fecha");
+                md.addRow(tickets);
+            }
+            tbDatos.setModel(md);
+        } catch (SQLException e) {
+            System.err.println(e);
+        }
+        cerrarConexion();
+        cierraConsultas();
+      
+    }
+    
+    public void cerrarConexion(){
+    try {
+        cn.close();
+    } catch (SQLException sqle) {
+        JOptionPane.showMessageDialog(null, "Error al cerrar conexion", "Error", JOptionPane.ERROR_MESSAGE);
+        Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, sqle);
+    }
+    
+}
+    
+    public void cierraConsultas() {
+    try {
+        if (rs != null) {
+            rs.close();
+        }
+        if (st != null) {
+            st.close();
+        }
+        if (cn != null) {
+            cn.close();
+        }
+    } catch (SQLException sqle) {
+        JOptionPane.showMessageDialog(null, "Error cerrando la conexion!", "Error", JOptionPane.ERROR_MESSAGE);
+        Logger.getLogger(Recepcion.class.getName()).log(Level.SEVERE, null, sqle);
+    }
+}
+    
+    public void buscar(){
+    
+         try {
+
+            cn = con.getConexion();
+            ps = cn.prepareStatement("SELECT * FROM tickets WHERE codigo = ?");
+            ps.setString(1, txtCodigo.getText());
+
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                lblnumeroTicket.setVisible(true);
+                txtFecha.setVisible(true);
+                lblTicket.setVisible(true);
+                lblFecha.setVisible(true);
+                lblnumeroTicket.setText(rs.getString("id_ticket"));
+                txtNombre.setText(rs.getString("Nombre"));
+                txtApellido.setText(rs.getString("Apellido"));
+                cmbTipo.setSelectedItem(rs.getString("tipo_turno"));
+                txtFecha.setText(rs.getString("fecha"));
+            } else {
+                JOptionPane.showMessageDialog(null, "Ticket no encontrado");
+            }
+
+        } catch (HeadlessException | SQLException e) {
+            System.err.println(e);
+        }
+        cerrarConexion();
+        cierraConsultas();
+    
+    }
+    
+    
+    void limpiarTabla() {
+
+        Recepcion mostrar = new Recepcion();
+        mostrar.setVisible(true);
+        this.setVisible(false);
+
+    }
+    
+    public void eviarImpresion(){
+    
+    imprimir mostrar = new imprimir();
+    mostrar.setVisible(true);
+    imprimir.lblNumero.setText(lblnumeroTicket.getText());
+    imprimir.lblNombre.setText(txtNombre.getText());
+    imprimir.lblApellido.setText(txtApellido.getText());
+    imprimir.lblFecha.setText(txtFecha.getText());
+    imprimir.lblTipo.setText(cmbTipo.getSelectedItem().toString());
+    
+    }
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jLabel2 = new javax.swing.JLabel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jTextPane4 = new javax.swing.JTextPane();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        lblFecha = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtCodigo = new javax.swing.JTextPane();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtNombre = new javax.swing.JTextPane();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        txtApellido = new javax.swing.JTextPane();
+        cmbTipo = new javax.swing.JComboBox<>();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        txtFecha = new javax.swing.JTextPane();
+        lblTicket = new javax.swing.JLabel();
+        btnAsignar = new javax.swing.JButton();
+        btnModificar = new javax.swing.JButton();
+        btnBuscar = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
+        jpnlTickets = new javax.swing.JPanel();
+        jScrollPane7 = new javax.swing.JScrollPane();
+        tbDatos = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        lblnumeroTicket = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel12 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        btnVolver = new javax.swing.JButton();
+        btnSalir = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
+        jLabel13 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        btnImprimir = new javax.swing.JButton();
+
+        jLabel2.setText("jLabel2");
+
+        jScrollPane4.setViewportView(jTextPane4);
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMaximumSize(new java.awt.Dimension(1030, 607));
+        setMinimumSize(new java.awt.Dimension(1030, 607));
+        setName("EMISION DE TICKETS"); // NOI18N
+        setPreferredSize(new java.awt.Dimension(1034, 607));
+        setResizable(false);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setMaximumSize(new java.awt.Dimension(1030, 607));
+        jPanel1.setMinimumSize(new java.awt.Dimension(1030, 607));
+        jPanel1.setPreferredSize(new java.awt.Dimension(1030, 607));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel3.setFont(new java.awt.Font("Decker", 0, 18)); // NOI18N
+        jLabel3.setText("GENERADOR DE TICKETS");
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 150, -1, -1));
+
+        jLabel4.setFont(new java.awt.Font("Decker", 0, 12)); // NOI18N
+        jLabel4.setText("CODIGO");
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 210, -1, -1));
+
+        jLabel5.setFont(new java.awt.Font("Decker", 0, 12)); // NOI18N
+        jLabel5.setText("NOMBRE");
+        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 260, -1, -1));
+
+        jLabel6.setFont(new java.awt.Font("Decker", 0, 12)); // NOI18N
+        jLabel6.setText("APELLIDO");
+        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 300, -1, -1));
+
+        jLabel7.setFont(new java.awt.Font("Decker", 0, 12)); // NOI18N
+        jLabel7.setText("TIPO");
+        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 330, -1, -1));
+
+        lblFecha.setFont(new java.awt.Font("Decker", 0, 12)); // NOI18N
+        lblFecha.setText("FECHA");
+        jPanel1.add(lblFecha, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 370, -1, -1));
+
+        jScrollPane1.setViewportView(txtCodigo);
+
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 200, 79, -1));
+
+        jScrollPane2.setViewportView(txtNombre);
+
+        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 250, 198, -1));
+
+        jScrollPane3.setViewportView(txtApellido);
+
+        jPanel1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 290, 198, -1));
+
+        cmbTipo.setFont(new java.awt.Font("Decker", 0, 12)); // NOI18N
+        cmbTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECCIONE", "PRIORITARIO", "ORDINARIO" }));
+        jPanel1.add(cmbTipo, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 330, 133, -1));
+
+        jScrollPane5.setViewportView(txtFecha);
+
+        jPanel1.add(jScrollPane5, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 360, 198, -1));
+
+        lblTicket.setFont(new java.awt.Font("Decker", 0, 18)); // NOI18N
+        lblTicket.setText("# Ticket");
+        jPanel1.add(lblTicket, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 200, -1, -1));
+
+        btnAsignar.setFont(new java.awt.Font("Decker", 0, 18)); // NOI18N
+        btnAsignar.setText("ASIGNAR TICKET ");
+        btnAsignar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAsignarActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnAsignar, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 430, 170, 40));
+
+        btnModificar.setText("MODIFICAR TICKET");
+        btnModificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModificarActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnModificar, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 500, 140, 30));
+
+        btnBuscar.setFont(new java.awt.Font("Decker", 0, 11)); // NOI18N
+        btnBuscar.setText("BUSCAR TICKET");
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 200, 110, 30));
+
+        btnEliminar.setText("ELIMINAR TICKET");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 500, 129, 30));
+
+        jpnlTickets.setBackground(new java.awt.Color(0, 102, 153));
+        jpnlTickets.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Tickets Generados", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Decker", 0, 24), new java.awt.Color(255, 255, 255))); // NOI18N
+        jpnlTickets.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        tbDatos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "#TICKET", "CODIGO", "NOMBRE", "APELLIDO", "TURNO", "FECHA"
+            }
+        ));
+        jScrollPane7.setViewportView(tbDatos);
+
+        jpnlTickets.add(jScrollPane7, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, 473, 230));
+
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Paris Wallpaper (23)-143546_800.jpg"))); // NOI18N
+        jpnlTickets.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 30, 500, 260));
+
+        jPanel1.add(jpnlTickets, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 160, 500, 290));
+
+        jLabel8.setFont(new java.awt.Font("Decker", 1, 36)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(51, 204, 255));
+        jLabel8.setText("MI PISTILLO");
+        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 60, 240, -1));
+
+        jLabel9.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
+        jLabel9.setForeground(new java.awt.Color(102, 102, 102));
+        jLabel9.setText("AGENCIA BANCARIA ");
+        jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 20, -1, -1));
+
+        lblnumeroTicket.setBackground(new java.awt.Color(255, 255, 255));
+        lblnumeroTicket.setFont(new java.awt.Font("Decker", 0, 24)); // NOI18N
+        lblnumeroTicket.setForeground(new java.awt.Color(0, 153, 255));
+        lblnumeroTicket.setText("-------");
+        jPanel1.add(lblnumeroTicket, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 220, 60, 60));
+        lblnumeroTicket.getAccessibleContext().setAccessibleName("");
+
+        jPanel3.setBackground(new java.awt.Color(0, 153, 255));
+        jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel12.setFont(new java.awt.Font("Decker", 0, 48)); // NOI18N
+        jLabel12.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel12.setText("BIENVENIDOS");
+        jPanel3.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 390, -1, -1));
+
+        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 150, 10, 320));
+
+        jPanel2.setBackground(new java.awt.Color(0, 153, 255));
+        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel11.setFont(new java.awt.Font("Decker", 0, 48)); // NOI18N
+        jLabel11.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel11.setText("BIENVENIDOS");
+        jPanel2.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 390, -1, -1));
+
+        jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Paris Wallpaper (23)-143546_800.jpg"))); // NOI18N
+        jPanel2.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -230, 520, 290));
+
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 460, 500, 60));
+
+        btnVolver.setFont(new java.awt.Font("Decker", 0, 14)); // NOI18N
+        btnVolver.setText("VOLVER");
+        btnVolver.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVolverActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnVolver, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 530, 100, 40));
+
+        btnSalir.setFont(new java.awt.Font("Decker", 0, 14)); // NOI18N
+        btnSalir.setText("SALIR");
+        btnSalir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSalirActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnSalir, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 530, 100, 40));
+
+        jPanel4.setBackground(new java.awt.Color(0, 153, 255));
+        jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel13.setFont(new java.awt.Font("Decker", 0, 48)); // NOI18N
+        jLabel13.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel13.setText("BIENVENIDOS");
+        jPanel4.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 390, -1, -1));
+
+        jLabel14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Paris Wallpaper (23)-143546_800.jpg"))); // NOI18N
+        jPanel4.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -10, 520, 130));
+
+        jPanel1.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 80, 500, 70));
+
+        btnImprimir.setFont(new java.awt.Font("Decker", 0, 18)); // NOI18N
+        btnImprimir.setText("IMPRIMIR");
+        btnImprimir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnImprimirActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnImprimir, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 430, 170, 40));
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1050, 630));
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
+        login mostrar = new login();
+        mostrar.setVisible(true);
+        this.setVisible(false);
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnVolverActionPerformed
+
+    private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
+        System.exit(WIDTH);
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnSalirActionPerformed
+
+    private void btnAsignarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAsignarActionPerformed
+
+        try {
+
+            cn = con.getConexion();
+            ps = cn.prepareStatement("INSERT INTO tickets (codigo, Nombre, Apellido, tipo_turno) VALUES(?,?,?,?)");
+            ps.setString(1, txtCodigo.getText());
+            ps.setString(2, txtNombre.getText());
+            ps.setString(3, txtApellido.getText());
+            ps.setString(4, cmbTipo.getSelectedItem().toString());
+            int res = ps.executeUpdate();
+            if (res > 0) {
+                JOptionPane.showMessageDialog(null, "Ticket Asignado");
+                buscar();
+                eviarImpresion();
+                limpiarCajas();
+                limpiarTabla();
+            } else {
+                JOptionPane.showMessageDialog(null, "Error al asignar");
+                limpiarCajas();
+            }
+            cn.close();
+
+        } catch (HeadlessException | SQLException e) {
+            System.err.println(e);
+        }
+        cerrarConexion();
+        cierraConsultas();
+          
+    }//GEN-LAST:event_btnAsignarActionPerformed
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+
+    buscar();
+
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
+
+        try {
+
+            cn = con.getConexion();
+            ps = cn.prepareStatement("UPDATE tickets SET codigo=?, Nombre=?, Apellido=?, tipo_turno=? WHERE id_ticket=?");
+            ps.setString(1, txtCodigo.getText());
+            ps.setString(2, txtNombre.getText());
+            ps.setString(3, txtApellido.getText());
+            ps.setString(4, cmbTipo.getSelectedItem().toString());
+            ps.setString(5, lblnumeroTicket.getText());
+            int res = ps.executeUpdate();
+
+            if (res > 0) {
+                JOptionPane.showMessageDialog(null, "Ticket Modificado");
+                limpiarCajas();
+                limpiarTabla();
+
+            } else {
+                JOptionPane.showMessageDialog(null, "No se pudo Modificar el Ticket");
+                limpiarCajas();
+            }
+
+            cerrarConexion();
+            cierraConsultas();
+
+        } catch (HeadlessException | SQLException e) {
+            System.err.println(e);
+        }
+
+    }//GEN-LAST:event_btnModificarActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+
+        try {
+
+            cn = con.getConexion();
+            ps = cn.prepareStatement("DELETE FROM tickets WHERE id_ticket=?");
+            ps.setInt(1, Integer.parseInt(lblnumeroTicket.getText()));
+
+            int res = ps.executeUpdate();
+
+            if (res > 0) {
+                JOptionPane.showMessageDialog(null, "Ticket Eliminado");
+                limpiarCajas();
+                limpiarTabla();
+
+            } else {
+                JOptionPane.showMessageDialog(null, "No se pudo eliminar el ticket");
+                limpiarCajas();
+            }
+
+            cerrarConexion();
+            cierraConsultas();
+
+        } catch (HeadlessException | NumberFormatException | SQLException e) {
+            System.err.println(e);
+        }
+
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
+
+  eviarImpresion();   
+    }//GEN-LAST:event_btnImprimirActionPerformed
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(Recepcion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(Recepcion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(Recepcion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Recepcion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new Recepcion().setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAsignar;
+    private javax.swing.JButton btnBuscar;
+    private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnImprimir;
+    private javax.swing.JButton btnModificar;
+    private javax.swing.JButton btnSalir;
+    private javax.swing.JButton btnVolver;
+    private javax.swing.JComboBox<String> cmbTipo;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane7;
+    private javax.swing.JTextPane jTextPane4;
+    private javax.swing.JPanel jpnlTickets;
+    private javax.swing.JLabel lblFecha;
+    private javax.swing.JLabel lblTicket;
+    public javax.swing.JLabel lblnumeroTicket;
+    private javax.swing.JTable tbDatos;
+    private javax.swing.JTextPane txtApellido;
+    private javax.swing.JTextPane txtCodigo;
+    private javax.swing.JTextPane txtFecha;
+    private javax.swing.JTextPane txtNombre;
+    // End of variables declaration//GEN-END:variables
+}
